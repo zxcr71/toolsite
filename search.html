@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Link Library</title>
+  <style>
+    :root{
+      --bg:#0f172a; /* slate-900 */
+      --panel:#111827; /* gray-900 */
+      --muted:#9ca3af; /* gray-400 */
+      --text:#e5e7eb; /* gray-200 */
+      --accent:#22d3ee; /* cyan-400 */
+      --chip:#1f2937; /* gray-800 */
+      --ring:#334155; /* slate-700 */
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#0b1220,#0f172a);color:var(--text);font:16px/1.5 system-ui,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif}
+    .container{max-width:1100px;margin:40px auto;padding:0 16px}
+    .card{background:rgba(17,24,39,.72);backdrop-filter: blur(8px); border:1px solid var(--ring);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+    header{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:18px 18px 0}
+    h1{font-size:20px;margin:0;font-weight:700;letter-spacing:.4px}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;padding:14px 18px 18px}
+    input[type="search"],select{background:var(--panel);color:var(--text);border:1px solid var(--ring);border-radius:12px;padding:12px 14px;font-size:14px;outline:none;min-width:220px}
+    input[type="search"]:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,211,238,.2)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding:18px}
+    .linkcard{background:linear-gradient(180deg,rgba(31,41,55,.9),rgba(31,41,55,.75));border:1px solid var(--ring);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px}
+    .linkcard a{color:var(--text);text-decoration:none;font-weight:600;word-break:break-word}
+    .linkcard a:hover{color:var(--accent)}
+    .meta{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted)}
+    .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+    .chip{background:var(--chip);border:1px solid var(--ring);color:var(--muted);padding:3px 8px;border-radius:999px;font-size:11px}
+    .category{padding:8px 14px;border-top:1px dashed var(--ring);display:flex;align-items:center;justify-content:space-between;color:var(--muted)}
+    .category strong{color:var(--text)}
+    .footer{padding:8px 14px;color:var(--muted);font-size:12px;border-top:1px solid var(--ring)}
+    .empty{opacity:.8;text-align:center;padding:40px}
+    details{border-top:1px solid var(--ring)}
+    summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;padding:14px 18px}
+    summary::-webkit-details-marker{display:none}
+    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,"Liberation Mono",Consolas,monospace;background:#0b1220;border:1px solid var(--ring);padding:2px 6px;border-radius:6px}
+    .hint{font-size:12px;color:var(--muted);padding:0 18px 14px}
+    .sr{position:absolute;left:-9999px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <header>
+        <h1>📚 My Link Library</h1>
+        <div class="hint">Type to search · Use <span class="kbd">/</span> to focus search</div>
+      </header>
+      <div class="controls">
+        <label class="sr" for="search">Search</label>
+        <input id="search" type="search" placeholder="Search by name, tag, or URL…" autocomplete="off" />
+        <select id="categorySelect">
+          <option value="all">All Categories</option>
+        </select>
+        <select id="sortSelect" title="Sort">
+          <option value="name">Sort: Name (A→Z)</option>
+          <option value="recent">Sort: Recently Added</option>
+          <option value="category">Sort: Category</option>
+        </select>
+      </div>
+
+      <!-- RESULTS RENDER HERE -->
+      <div id="results" class="grid" role="list"></div>
+
+      <div id="emptyState" class="empty" hidden>
+        <p>No links found. Try a different search or category.</p>
+      </div>
+
+      <details>
+        <summary>
+          <span>➡️ How to add your links</span>
+          <span class="hint">Click to expand</span>
+        </summary>
+        <div class="hint">
+          Edit the <strong>linksData</strong> array in the code below. Each item looks like:
+          <pre><code>{
+  name: "Custom Name to Show",
+  url: "https://example.com",
+  category: "Study",
+  tags: ["notes","python"],
+  addedAt: "2025-08-15" // YYYY-MM-DD (optional, used for sorting by recent)
+}</code></pre>
+          • You can create any categories you like (e.g., Work, College, Tools).<br>
+          • Use <em>tags</em> to improve search. You can search by name, tag, or URL.<br>
+          • Categories dropdown is auto-filled from your data.
+        </div>
+      </details>
+
+      <div class="footer">Built with plain HTML, CSS & JS – no libraries.</div>
+    </div>
+  </div>
+
+  <script>
+    // ==============================
+    // 1) YOUR LINKS GO HERE ⬇️
+    //    Replace these examples with your own. Keep the same structure.
+    // ==============================
+    const linksData = [
+      {
+        name: "chatreader spy android",
+        url: "",
+        category: "spy",
+        tags: ["whatsapp","android","spy","hiddenicon"],
+        addedAt: "2025-08-15"
+      },
+      {
+        name: "DSA Notes (Drive)",
+        url: "https://drive.google.com/your-notes",
+        category: "Study",
+        tags: ["dsa","notes","semester-3"],
+        addedAt: "2025-08-12"
+      },
+      {
+        name: "YouTube – Web Dev Playlist",
+        url: "https://youtube.com/playlist?list=abc",
+        category: "Study",
+        tags: ["html","css","js"],
+        addedAt: "2025-08-01"
+      },
+      {
+        name: "Job Portal",
+        url: "https://jobs.example.com",
+        category: "Work",
+        tags: ["internship","applications"],
+        addedAt: "2025-07-25"
+      }
+    ];
+
+    // ==============================
+    // 2) APP LOGIC – No need to edit below unless you want to customize behavior
+    // ==============================
+    const elSearch = document.getElementById('search');
+    const elCategory = document.getElementById('categorySelect');
+    const elSort = document.getElementById('sortSelect');
+    const elResults = document.getElementById('results');
+    const elEmpty = document.getElementById('emptyState');
+
+    // Keyboard shortcut: press / to focus search
+    window.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement !== elSearch) {
+        e.preventDefault();
+        elSearch.focus();
+      }
+    });
+
+    function uniqueCategories(data){
+      return ['all', ...Array.from(new Set(data.map(x => x.category))).filter(Boolean)];
+    }
+
+    function populateCategories(){
+      const cats = uniqueCategories(linksData);
+      elCategory.innerHTML = cats.map(c => `<option value="${c}">${c[0].toUpperCase()+c.slice(1)}</option>`).join('');
+      elCategory.value = 'all';
+    }
+
+    function normalize(str){
+      return (str||'').toString().toLowerCase();
+    }
+
+    function matchesQuery(item, q){
+      if(!q) return true;
+      const hay = [item.name, item.url, ...(item.tags||[]), item.category].map(normalize).join(' \u2022 ');
+      return hay.includes(normalize(q));
+    }
+
+    function matchesCategory(item, cat){
+      return cat === 'all' || normalize(item.category) === normalize(cat);
+    }
+
+    function sortItems(items, mode){
+      const copy = [...items];
+      if(mode === 'name'){
+        copy.sort((a,b)=>normalize(a.name).localeCompare(normalize(b.name)));
+      } else if(mode === 'recent'){
+        copy.sort((a,b)=> new Date(b.addedAt||0) - new Date(a.addedAt||0));
+      } else if(mode === 'category'){
+        copy.sort((a,b)=> normalize(a.category).localeCompare(normalize(b.category)) || normalize(a.name).localeCompare(normalize(b.name)) );
+      }
+      return copy;
+    }
+
+    function render(){
+      const q = elSearch.value.trim();
+      const cat = elCategory.value;
+      const mode = elSort.value;
+
+      let filtered = linksData.filter(item => matchesQuery(item, q) && matchesCategory(item, cat));
+      filtered = sortItems(filtered, mode);
+
+      elResults.innerHTML = '';
+      if(filtered.length === 0){
+        elEmpty.hidden = false;
+        return;
+      }
+      elEmpty.hidden = true;
+
+      // group by category for nice layout
+      const groups = {};
+      filtered.forEach(item => {
+        const k = item.category || 'Uncategorized';
+        (groups[k] ||= []).push(item);
+      });
+
+      // create cards for each link
+      for(const [catName, items] of Object.entries(groups)){
+        items.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'linkcard';
+          card.setAttribute('role','listitem');
+
+          const a = document.createElement('a');
+          a.href = item.url;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.textContent = item.name || item.url;
+
+          const meta = document.createElement('div');
+          meta.className = 'meta';
+          const host = (()=>{ try{ return new URL(item.url).host; } catch{ return item.url; } })();
+          const date = item.addedAt ? new Date(item.addedAt).toLocaleDateString() : '';
+          meta.innerHTML = `<span>${host}</span><span>${date}</span>`;
+
+          const chips = document.createElement('div');
+          chips.className = 'chips';
+          (item.tags||[]).forEach(t=>{
+            const tag = document.createElement('span');
+            tag.className = 'chip';
+            tag.textContent = `#${t}`;
+            chips.appendChild(tag);
+          });
+
+          const catRow = document.createElement('div');
+          catRow.className = 'category';
+          catRow.innerHTML = `<strong>${catName}</strong><span>${item.tags?.length||0} tags</span>`;
+
+          card.appendChild(a);
+          card.appendChild(meta);
+          if((item.tags||[]).length) card.appendChild(chips);
+          card.appendChild(catRow);
+
+          elResults.appendChild(card);
+        });
+      }
+    }
+
+    // persist last used filters in sessionStorage
+    [elSearch, elCategory, elSort].forEach(ctrl => ctrl.addEventListener('input', ()=>{
+      sessionStorage.setItem('linklib_search', elSearch.value);
+      sessionStorage.setItem('linklib_cat', elCategory.value);
+      sessionStorage.setItem('linklib_sort', elSort.value);
+      render();
+    }));
+
+    function restoreState(){
+      const s = sessionStorage.getItem('linklib_search') || '';
+      const c = sessionStorage.getItem('linklib_cat') || 'all';
+      const o = sessionStorage.getItem('linklib_sort') || 'name';
+      elSearch.value = s;
+      elSort.value = o;
+      // category value is set after populateCategories()
+      return c;
+    }
+
+    // init
+    populateCategories();
+    const catToRestore = restoreState();
+    if ([...elCategory.options].some(opt=>opt.value===catToRestore)) {
+      elCategory.value = catToRestore;
+    }
+    render();
+  </script>
+</body>
+</html>
